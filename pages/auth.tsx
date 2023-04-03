@@ -1,6 +1,7 @@
 import { useCallback, useState } from "react";
 import Input from "@/components/Input";
 import axios from 'axios'
+import { signIn } from 'next-auth/react'
 
 /* eslint-disable @next/next/no-img-element */
 const Auth = () => {
@@ -11,8 +12,21 @@ const Auth = () => {
     const [ variant, setVariant] = useState('login')
 
     const toggleVariant = useCallback(() => {
-        setVariant((currentVariant) => currentVariant == 'login' ? 'register' : 'login')
+        setVariant((currentVariant) => currentVariant === 'login' ? 'register' : 'login');
     }, []);
+    
+        const login = useCallback(async () => {
+    try {
+        await signIn('credentials', {
+            email,
+            password,
+            redirect: false,
+            callbackUrl: '/'
+        })
+    } catch (error) {
+        console.log(error)
+    }
+        }, [email,password]);
 
     const register = useCallback(async () => {
 try {
@@ -25,7 +39,7 @@ try {
 
     console.log(error)
 }
-    }, []);
+    }, [email, name, password,]);
 
   return (
   <div className="relative h-full w-full bg-[url('/images/hero.jpg')] bg-no-repeat bg-center bg-fixed bg-cover">
@@ -61,8 +75,8 @@ try {
                     value={password} 
                     />
                  </div>
-                    <button className="bg-red-600 py-3 text-white rounded-md w-full mt-10 hover:bg-red-700 transition">
-                        {variant == 'login' ? 'Login' : 'Sign up' }                     
+                    <button onClick={variant == 'login' ? login : register} className="bg-red-600 py-3 text-white rounded-md w-full mt-10 hover:bg-red-700 transition">
+                        {variant === 'login' ? 'Login' : 'Sign up' }                     
                     </button>
                     <p className="text-neutral-500 mt-12">
                        {variant == 'login' ? 'First time using Netflix?': 'Already have an account?'}

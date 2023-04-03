@@ -29,7 +29,7 @@ providers: [
                 }
             });
 
-            if(!user || user.hashedPassword) {
+            if(!user || !user.hashedPassword) {
                 throw new Error('Email does not exist')
             }
             const isCorrectPassword = await compare(
